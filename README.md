@@ -176,17 +176,21 @@ for i in num:
     comment = comment.replace(u'\xa0', u'')        # \xa0 제거
     comment = comment.lstrip('[').rstrip(']')            # 댓글의 양 끝에 []가 딸려오길래 제거
     
-    result.append([title.text.strip(), content.text, comment])    
+    result.append([title.text.strip(), content.text, comment])
+    
+print(len(result)) # 최종 결과의 길이가 350이면 정상
 ```
 
 #### 01-3. csv 파일로 내보내기
+
+- 이 과정에서 모든 데이터가 csv에 담기지 않는 경우가 있음
 
 ```python
 today = datetime.today().strftime("%Y_%m_%d")
 filename = today + '로아_final.csv'
 
 # encoding을 다음과 같이 주지 않으면
-# 한글이 다 깨져 나온다
+# 한글이 깨져 나온다
 f = open(filename, 'w', encoding='utf-8-sig', newline='')
 writer = csv.writer(f)
 title = "title,content,comment".split(',')
@@ -195,5 +199,10 @@ writer.writerow(title)
 writer.writerows(result)
 ```
 
+<br/>
 
+### 02. CSV 파일로 데이터 분석
 
+- 01 과정에서 추출한 데이터를 활용하여 분석을 시작
+
+#### 02-1. 
