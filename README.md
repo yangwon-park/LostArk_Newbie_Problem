@@ -18,6 +18,8 @@
 
 ## 기술 스택
 
+- IDE : **Jupter Notebook**
+
 - Python 3.9
   - BeautifulSoup (4.10.0)
   - Selenium (4.1.0)
