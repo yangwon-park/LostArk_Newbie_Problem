@@ -18,15 +18,22 @@
 
 <br/>
 
-## 기술 스택
+## 기술 스택 및 버전
 
 - IDE : **Jupter Notebook**
-
-- Python 3.9
+- Python 3.7 (Mecab이 3.8 이상 지원 안 함)
   - BeautifulSoup (4.10.0)
   - Selenium (4.1.0)
   - Pandas (1.3.4)
   - Numpy (1.20.3)
+- KoNLPy - Mecab (설치 방법 아래 참고)
+  - jdk 1.8
+  - JPype1-1.3.0-cp37-cp37-win_amd64.whl
+  - mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl
+  - mecab-ko-msvc (0.9.2)
+  - mecab-ko-dic-mscv (2.1.1)
+
+- VCS  : Github
 
 ## 참고 사이트 (추가 예정)
 
@@ -205,4 +212,132 @@ writer.writerows(result)
 
 - 01 과정에서 추출한 데이터를 활용하여 분석을 시작
 
-#### 02-1. 
+#### 02-0. matplotilb 한글 폰트 깨짐 방지 (시스템 영구 등록)
+
+0. 한글 폰트 설치 완료 - [네이버 폰트](https://hangeul.naver.com/2017/nanum)
+
+1. 아래 코드로 설치
+
+```python
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+# matplotlibrc 파일의 경로 확인
+print(mpl.matplotlib_fname())
+
+# 위의 경로에 있는 matplotlibrc 파일을 수정
+# font.family 부분의 주석을 제거하고
+# sans_serif => 원하는 폰트(ex NanumGothic)로 변경
+# axes.unicode_minus의 값 True => False로 변경
+
+# 해당 폴더로 이동하여 내부 파일 전부 삭제 (캐시 삭제)
+print(mpl.get_cachedir())
+
+# 주피터 노트북 재시작
+
+plt.figure().add_subplot().set_title('안녕하세요')
+plt.show()
+```
+
+#### 02-1. 데이터 구조 파악
+
+```python
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+# 앞서 저장했던 csv 파일 불러오기
+df = pd.read_csv('2022-02-24로아_final.csv')
+
+# row, col 파악
+# 결측값이 들어오지 않아서 예정된 350개 보다 더 작은 340개의 데이터가 들어옴
+df.shape
+
+# 결측치 확인 => 없음
+df.isnull().sum()
+
+# 전체 데이터 구조 파악
+df.info()
+
+# 상위 5개 데이터 확인
+df.head()
+
+# 혹시나 중복되어 들어온 데이터가 있나 확인
+df = df.drop_duplicates(['title', 'content'], keep='first')
+
+# 기존값과 변화 없으므로 중복된 데이터가 없다고 판정
+df.shape
+```
+
+#### 02-2. 데이터 전처리
+
+- KoNLPY 설치 과정
+    - [KoNLPY 설치 참고](https://konlpy.org/en/latest/install/)
+    - Windows에서 KoNLPY를 사용하려면 jdk1.7 이상이 설치되어 있어야 함
+        - [jdk1.8 설치](https://www.oracle.com/java/technologies/downloads/#java8-windows)
+    - pip install --upgrade pip
+    - [JPype 다운로드](https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype)
+    - pip install JPype1-1.3.0-cp39-cp39-win_amd64.whl
+        - 0.5.7 이상, 본인 파이썬 버전, 윈도우 32 or 64 bit에 맞춰서 설치
+        - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행   
+    - pip install konlpy
+    - [KoNLPy API](https://konlpy.org/ko/v0.4.3/morph/)
+- Mecab 설치 과정
+    - [Mecab 설치 참고](https://lsjsj92.tistory.com/612)
+    - [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc/releases/tag/release-0.9.2-msvc-3) => 윈도우 bit에 맞춰서 다운로드
+    - [mecab-ko-dic-msvc.zip](https://github.com/Pusnow/mecab-ko-dic-msvc/releases/tag/mecab-ko-dic-2.1.1-20180720-msvc-2) => mecab-ko-dic-msvc.zip 다운로드
+    - C:/에 mecab 디렉토리 생성 => 위 두 zip파일 mecab 디렉토리에 압축해제
+    - [mecab_python](https://github.com/Pusnow/mecab-python-msvc/releases/tag/mecab_python-0.996_ko_0.9.2_msvc-2)
+        - 본인 파이썬 버젼, 윈도우 32 or 64 bit에 맞춰서 설치 (3.8 이상 지원 X)
+        - pip install mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl
+        - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행
+
+```python
+from konlpy.tag import Mecab
+
+# mecab-ko-dic-msvc.zip의 압축을 푼 경로에 있음
+m = Mecab('C:\mecab\mecab-ko-dic')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
