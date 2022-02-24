@@ -16,6 +16,8 @@
 
 이에 따라 뉴비들이 느끼는 문제점을 파악하고 분석하여 저와 제 지인들은 물론 정말 많은 게이머분들에게 도움이 되고 게임 기업의 입장에서 어떻게 하면 **유저 리텐션**을 높일 수 있을지 공부해보고자 이 프로젝트를 기획하게 됐습니다.
 
+<br/>
+
 ## 기술 스택
 
 - IDE : **Jupter Notebook**
@@ -41,6 +43,7 @@
 ```python
 import time, random
 import requests, re, csv
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -92,6 +95,8 @@ driver = webdriver.Chrome()
 
   - Selenium 객체가 뒤로가기 과정에서 새로고침되어 매번 객체를 재호출해야하는 문제가 발생
 
+  - 위의 에러가 다른 곳에서도 발생한다면 코드 사이에 interval을 줘서 로드가 될 때까지 조금 기다려준다
+
 - 두 번째 메커니즘
   - '뉴비' 검색 => 게시글 번호 스크래핑 => 번호 별 url 접근 => 스크래핑 => 페이지 이동
   - 작동은 되지만 이것보다 한 번에 게시글 번호를 불러온 후 작업하는게 더 용이하다고 판단
@@ -132,7 +137,7 @@ for i in range(1, 8):
 #### 01-2. 게시글 제목, 내용, 댓글 가져오기
 
 - 뉴비 유저들의 고충을 분석하기 위해 게시글의 제목, 내용, 댓글을 가져옴
-- [필요없는 태그 삭제 참고]('https://lovelydiary.tistory.com/17')
+- [필요없는 태그 삭제 참고](https://lovelydiary.tistory.com/17)
 - [\xa0 삭제 참고](https://stackoverflow.com/questions/10993612/how-to-remove-xa0-from-string-in-python)
 - 제목, 내용, 댓글 가져오기 코드
 
@@ -164,26 +169,31 @@ for i in num:
     # 댓글은 엘리먼트가 여러개
     # find_all로 받아오면 html 태그와 non-breaking space 코드(\xa0)가 같이 들어옴
     # 더티 데이터를 최소화 하기 위해 전처리
-    comment = soup.find_all("div", attrs={"class":"comment"}) 
-    
-    if not comment:
-        continue
-    
+    # 댓글이 없는 경우 => '' 으로 입력됨
+    comment = soup.find_all("div", attrs={"class":"comment"})  
     comment = str(comment)
-    comment = re.sub('<.+?>','',comment,0).strip()
-    comment = comment.replace(u'\xa0', u'')
-    comment = comment.lstrip('[').rstrip(']')
+    comment = re.sub('<.+?>','',comment,0).strip()  # html 제거
+    comment = comment.replace(u'\xa0', u'')        # \xa0 제거
+    comment = comment.lstrip('[').rstrip(']')            # 댓글의 양 끝에 []가 딸려오길래 제거
     
-    
-    result.append([title.text.strip(), content.text, comment])
-    
+    result.append([title.text.strip(), content.text, comment])    
 ```
 
+#### 01-3. csv 파일로 내보내기
 
+```python
+today = datetime.today().strftime("%Y_%m_%d")
+filename = today + '로아_final.csv'
 
-
-
-
+# encoding을 다음과 같이 주지 않으면
+# 한글이 다 깨져 나온다
+f = open(filename, 'w', encoding='utf-8-sig', newline='')
+writer = csv.writer(f)
+title = "title,content,comment".split(',')
+    
+writer.writerow(title)
+writer.writerows(result)
+```
 
 
 
