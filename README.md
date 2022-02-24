@@ -10,7 +10,7 @@
 
 ---
 
-<span style="font-size:120%">최근 **'로스트아크'**를 다시 시작하려는 유저의 입장에서 출시가 그렇게 오래되지 않았고 게임의 UI가 크게 불편하지 않았음에도 생각보다 쉽게 게임에 적응하지 못하는 제 모습이 보였습니다.</span>
+<span style="font-size:120%">최근 '로스트아크'를 다시 시작하려는 유저의 입장에서 출시가 그렇게 오래되지 않았고 게임의 UI가 크게 불편하지 않았음에도 생각보다 쉽게 게임에 적응하지 못하는 제 모습이 보였습니다.</span>
 
 ---
 
@@ -19,14 +19,39 @@
 ## 기술 스택
 
 - Python 3.9
-  - BeautifulSoup
-  - Selenium
-  - Pandas
-  - Numpy
+  - BeautifulSoup (4.10.0)
+  - Selenium (4.1.0)
+  - Pandas (1.3.4)
+  - Numpy (1.20.3)
 
 ## 참고 사이트 (추가 예정)
 
-<span style="font-size: 200%">👨‍✈️</span>Robots.txt 참고하여 스크래핑하였지만 혹시 문제가 된다면 말씀해주세요!!!
+<span style="font-size: 300%">👨‍✈️</span>Robots.txt 참고하여 스크래핑하였지만 혹시 문제가 된다면 말씀해주세요!!!
 
 - [LostArk 인벤 - 질문과 답변 게시판](https://www.inven.co.kr/board/lostark/4822)
 
+
+
+## 개발 과정
+
+### 00. 기본 개발환경 구성
+
+```python
+import time, random
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+
+options = webdriver.ChromeOptions()
+options.headless = True
+options.add_argument('window-size=2560x1440')
+options.add_argument('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36')
+
+# driver = webdriver.Chrome(options=options)
+driver = webdriver.Chrome()
+```
+
+<br/>
+
+### 01. LostArk 인벤
