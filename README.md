@@ -20,18 +20,23 @@
 
 ## 기술 스택 및 버전
 
+- Anaconda (가상환경 이름 : 3_7)
 - IDE : **Jupter Notebook**
 - Python 3.7 (Mecab이 3.8 이상 지원 안 함)
   - BeautifulSoup (4.10.0)
   - Selenium (4.1.0)
-  - Pandas (1.3.4)
-  - Numpy (1.20.3)
-- KoNLPy - Mecab (설치 방법 아래 참고)
-  - jdk 1.8
-  - JPype1-1.3.0-cp37-cp37-win_amd64.whl
-  - mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl
-  - mecab-ko-msvc (0.9.2)
-  - mecab-ko-dic-mscv (2.1.1)
+  - pandas (1.3.4)
+  - numpy (1.19.5)
+- 자연어 처리
+  - KoNLPy - Mecab (설치 방법 아래 참고)
+    - jdk 1.8
+    - JPype1-1.3.0-cp37-cp37-win_amd64.whl
+    - mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl
+    - mecab-ko-msvc (0.9.2)
+    - mecab-ko-dic-mscv (2.1.1)
+
+  - PyKoSpacing - Spacing (띄어쓰기 처리)
+    - numpy 1.20 넘으면 Tensoflow 미지원으로 에러 발생
 
 - VCS  : Github
 
@@ -271,7 +276,7 @@ df.shape
 
 #### 02-2. 데이터 전처리
 
-- KoNLPY 설치 과정
+- KoNLPY 설치
     - [KoNLPY 설치 참고](https://konlpy.org/en/latest/install/)
     - Windows에서 KoNLPY를 사용하려면 jdk1.7 이상이 설치되어 있어야 함
         - [jdk1.8 설치](https://www.oracle.com/java/technologies/downloads/#java8-windows)
@@ -282,7 +287,7 @@ df.shape
         - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행   
     - pip install konlpy
     - [KoNLPy API](https://konlpy.org/ko/v0.4.3/morph/)
-- Mecab 설치 과정
+- Mecab 설치
     - [Mecab 설치 참고](https://lsjsj92.tistory.com/612)
     - [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc/releases/tag/release-0.9.2-msvc-3) => 윈도우 bit에 맞춰서 다운로드
     - [mecab-ko-dic-msvc.zip](https://github.com/Pusnow/mecab-ko-dic-msvc/releases/tag/mecab-ko-dic-2.1.1-20180720-msvc-2) => mecab-ko-dic-msvc.zip 다운로드
@@ -292,12 +297,87 @@ df.shape
         - pip install mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl
         - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행
 
-```python
-from konlpy.tag import Mecab
+- 연습
 
-# mecab-ko-dic-msvc.zip의 압축을 푼 경로에 있음
-m = Mecab('C:\mecab\mecab-ko-dic')
-```
+  ```python
+  from konlpy.tag import Mecab
+  
+  # Mecab은 일반적인 Konlpy의 토크나이저와는 다르게 dicpath를 파라미터로 지정해줘야함
+  # mecab-ko-dic-msvc.zip의 압축을 푼 경로에 있음
+  m = Mecab('C:\mecab\mecab-ko-dic')
+  m.morphs(u'아버지가방에들어가신다')
+  
+  # 출력 (list)
+  # ['아버지', '가', '방', '에', '들어가', '신다']
+  ```
+
+### 03. 케이스 별 WordCloud 만들기
+
+#### 03-1. Case-01
+
+- 사용 컬럼 : 제목, 내용
+
+- 데이터 종류 : 한글, 숫자
+
+- RPG 게임 특성상 레벨, 과금 요소가 영향을 줄 거라고 판단하여 숫자도 남겨둠
+
+- 띄어쓰기 처리 : O
+
+  ```python
+  # 데이터를 붙이는 도중에 단어끼리 붙어버리는 경우가 있어서 공백 추가
+  df['title_content'] = df['title'].values + ' ' + df['content'].values
+  
+  # 한글, 숫자 데이터만 남겨둠
+  df['ko_num_title_content'] = df['title_content'].apply(lambda x: re.sub('[^0-9가-힣\s]','',x))
+  
+  # ko_num_title_content 컬럼의 값들을 list로 만듬
+  ko_num_title_content_list = list(df['ko_num_title_content'].values)
+  
+  # 띄어쓰기 처리해준 값들을 담을 list
+  spacing_ko_num_title_content_list = []
+  
+  # PyKoSpacing를 사용하여 띄어쓰기 적용
+  for i in ko_num_title_content_list:
+      spacing_ko_num_title_content_list.append(spacing(i))
+  
+  # 띄어쓰기 적용한 문장의 명사들을 담을 리스트
+  spacing_ko_num_title_content_word_lst = []
+  
+  # 띄어쓰기 적용한 리스트의 명사들만 따로 담음
+  for word in spacing_ko_num_title_content_list:
+      for i in range(len(m.nouns(word))):
+          spacing_ko_num_title_content_word_lst.append(m.nouns(word)[i])
+          
+  # Counter 라이브러리로 각각의 개수 센 후 많은 순서대로 내림차순 정렬
+  from collections import Counter
+  count = Counter(spacing_ko_num_title_content_word_lst)
+  words_dict = dict(count)
+  words_dict = sorted(words_dict.items(), key=lambda item: item[1], reverse=True)        
+  
+  words_dict = dict(count)
+  
+  # 분석 결과를 보기 위해 WordCloud 사용
+  from wordcloud import WordCloud
+  
+  # 폰트를 프로젝트 폴더에 그냥 복사해서 바로 불러옴
+  wordcloud = WordCloud(font_path='NanumBarunGothic.ttf', width=500, height=500, background_color='white').generate_from_frequencies(words_dict)
+  
+  # WordCloud 출력
+  plt.figure(figsize=(7,7))
+  plt.imshow(wordcloud)
+  plt.axis('off')
+  plt.show()
+  ```
+
+- 결과 WordCloud
+
+<img style="width:80%" src='https://user-images.githubusercontent.com/97505799/155759219-edc6ed66-10b3-4c33-b3b8-8e75bca9ff84.png'>
+
+
+
+
+
+
 
 
 
