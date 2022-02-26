@@ -1,6 +1,6 @@
 # LostArk Newbie Problem
 
-## 계획 이유
+## 기획 이유
 
 특정한 게임에 유저들의 로열티가 충분한 경우 그 유저들은 다른 게임을 하다가도 결국엔 귀소 본능처럼 다시 자신이 재밌어하고 즐겨하던 그 게임으로 돌아오는 것을 많이 목격했습니다. 이를 참고로 봤을 때 기존 유저들을 붙잡아 두는 것도 중요하지만, 게임의 가장 중요한 요소는 **신규 유저들의 리텐션**이라고 생각합니다.
 
@@ -19,6 +19,8 @@
 <br/>
 
 ## 기술 스택 및 버전
+
+- OS : Windows 10
 
 - Anaconda (가상환경 이름 : 3_7)
 - IDE : **Jupter Notebook**
@@ -45,6 +47,7 @@
 <span style="font-size: 300%">👨‍✈️</span>Robots.txt 참고하여 스크래핑하였지만 혹시 문제가 된다면 말씀해주세요!!!
 
 - [LostArk 인벤 - 질문과 답변 게시판](https://www.inven.co.kr/board/lostark/4822)
+- [LostArk 공홈 - Q&A 게시판](https://lostark.game.onstove.com/Library/Qa/List)
 
 
 
@@ -89,7 +92,7 @@ driver = webdriver.Chrome()
 ### 01. LostArk 인벤 스크래핑
 
 - 게시판 : 질문과 답변 (페이지 당 게시글 50개)
-- 검색 키워드 : 뉴비
+- 검색 키워드 : 뉴비, 모코코(추가 예정)
 - 최근 한달 뉴비의 어려움에 관련된 게시글을 모음 (7페이지 정도)
 - 총 350개의 게시글을 데이터로 수집
 
@@ -315,13 +318,14 @@ df.shape
 
 #### 03-1. Case-01
 
-- 사용 컬럼 : 제목, 내용
+- 형태소 분석기 : Mecab
+- 띄어쓰기 처리 : O (Spacing)
+
+- 사용 컬럼 : 제목, 본문
 
 - 데이터 종류 : 한글, 숫자
 
 - RPG 게임 특성상 레벨, 과금 요소가 영향을 줄 거라고 판단하여 숫자도 남겨둠
-
-- 띄어쓰기 처리 : O
 
   ```python
   # 데이터를 붙이는 도중에 단어끼리 붙어버리는 경우가 있어서 공백 추가
@@ -371,25 +375,86 @@ df.shape
 
 - 결과 WordCloud
 
-<img style="width:80%" src='https://user-images.githubusercontent.com/97505799/155759219-edc6ed66-10b3-4c33-b3b8-8e75bca9ff84.png'>
+<p align="center"><img style="width:70%" src='https://user-images.githubusercontent.com/97505799/155759219-edc6ed66-10b3-4c33-b3b8-8e75bca9ff84.png'></p>
 
+- Case-01. 결론
+  - WordCloud에 더티 데이터가 너무 많음
+    - 불용어 선정을 할 엄두가 나지 않을 만큼 더티 데이터가 많음
+      - 게임 관련 게시글인 만큼 고유명사가 많아서 PyKoSpacing을 적용하면 더티 데이터가 많이 발생
+      - 해당 명사들을 따로 처리해주자!
 
+#### 03-2. Case-02.
 
+- 형태소 분석기 : Mecab
+- 띄어쓰기 처리 X
+- Mecab 사용자 Dict 설정
+  - (방법 추가 예정)
 
+- 사용 컬럼 : 제목, 본문
+- 데이터 종류 : 한글, 숫자
 
+```python
+# 한글, 숫자 데이터만 남겨둠
+df['ko_num_title_content'] = df['title_content'].apply(lambda x: re.sub('[^0-9가-힣\s]','',x))
 
+# ko_num_title_content 컬럼의 값들을 list로 만듬
+ko_num_title_content_list = list(df['ko_num_title_content'].values)
 
+# 명사들을 담을 리스트
+ko_num_title_content_word_lst = []
 
+for word in ko_num_title_content_list:
+    for i in range(len(m.nouns(word))):
+        ko_num_title_content_word_lst.append(m.nouns(word)[i])
+        
+# 불용어
+# 뉴비, 질문, 만약, 입문, 처음과 같은 단어들은
+# 어려운 점 자체와는 거리가 있는 단어들이기 때문에
+# 불용어로 선정
 
+# 동음이의어 선정 기준 => 더 많이 나온 단어로 선정
+# 건슬 => 건슬링어가 따로 있어서 불용어 선정
+# 캐릭터 => 캐릭이 따로 있어서 불용어 선정
+stop_words='뉴비 질문 그거 건 드 때 만 번 캐 차 부탁 추천 사 안녕 \
+            둘 디 막 입문 처음 건가요 데 팁 방법 필요 뭘 트 여 등등 후 \
+            이게 노 이후 포 만약 내 건지 쌩 지 나 다음 방향 카 건슬 로아 \
+            로스트아크 중 게임 시작 개 캐릭터 뭐 퀘 정도 여기 조언 현재 고민 \
+            저 생각 글 제 것'
 
+# 불용어 적용
+ko_num_title_content_word_lst = [word for word in ko_num_title_content_word_lst
+                                    			if not word in stop_words]
 
+# Counter 라이브러리로 단어의 빈도수 체크 후 많은 순서대로 내림차순 정렬
+from collections import Counter
+count = Counter(ko_num_title_content_word_lst)
+words_dict = dict(count)
+words_dict = sorted(words_dict.items(), key=lambda item: item[1], reverse=True)
 
+# 정렬 후 list로 반환되어 다시 dict로 변환
+words_dict = dict(count)
 
+from wordcloud import WordCloud
+# 폰트를 프로젝트 폴더에 그냥 복사해서 바로 불러왔습니다.
+wordcloud = WordCloud(font_path='NanumBarunGothic.ttf', 
+                      min_font_size=7, max_font_size=150,
+                      margin=3, width=500, height=500,
+                      background_color='white').generate_from_frequencies(words_dict)
 
+# WordCloud 출력
+plt.figure(figsize=(10,10))
+plt.imshow(wordcloud)
+plt.axis('off')
+plt.show()
+```
 
+- 결과 WorldCloud
 
+<p align="center"><img style="width:70%" src='https://user-images.githubusercontent.com/97505799/155831438-e1e3cf20-9c75-4926-af01-378780fe2c75.png'></p>
 
-
+- Case-02. 결론
+  - 띄어쓰기를 하지 않고 Mecab의 사용자 Dictionary를 사용하니 확실히 더티 데이터가 줄어듦
+  - 직업 고민에 대한 고민이 역시 많고, 뉴비들에게 하익, 스익과 같은 점핑 익스프레스 시스템이 생각보다 어렵게 느껴짐
 
 
 
