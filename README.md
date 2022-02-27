@@ -279,27 +279,34 @@ df.shape
 
 #### 02-2. 데이터 전처리
 
-- KoNLPY 설치
-    - [KoNLPY 설치 참고](https://konlpy.org/en/latest/install/)
-    - Windows에서 KoNLPY를 사용하려면 jdk1.7 이상이 설치되어 있어야 함
-        - [jdk1.8 설치](https://www.oracle.com/java/technologies/downloads/#java8-windows)
-    - pip install --upgrade pip
-    - [JPype 다운로드](https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype)
-    - pip install JPype1-1.3.0-cp39-cp39-win_amd64.whl
-        - 0.5.7 이상, 본인 파이썬 버전, 윈도우 32 or 64 bit에 맞춰서 설치
-        - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행   
-    - pip install konlpy
-    - [KoNLPy API](https://konlpy.org/ko/v0.4.3/morph/)
-- Mecab 설치
-    - [Mecab 설치 참고](https://lsjsj92.tistory.com/612)
-    - [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc/releases/tag/release-0.9.2-msvc-3) => 윈도우 bit에 맞춰서 다운로드
-    - [mecab-ko-dic-msvc.zip](https://github.com/Pusnow/mecab-ko-dic-msvc/releases/tag/mecab-ko-dic-2.1.1-20180720-msvc-2) => mecab-ko-dic-msvc.zip 다운로드
-    - C:/에 mecab 디렉토리 생성 => 위 두 zip파일 mecab 디렉토리에 압축해제
-    - [mecab_python](https://github.com/Pusnow/mecab-python-msvc/releases/tag/mecab_python-0.996_ko_0.9.2_msvc-2)
-        - 본인 파이썬 버젼, 윈도우 32 or 64 bit에 맞춰서 설치 (3.8 이상 지원 X)
-        - pip install mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl
-        - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행
-
+- [자연어 처리 참고](https://wikidocs.net/92961)
+    
+1. 형태소 분석기
+    - KoNLPY 설치
+        - [KoNLPy API](https://konlpy.org/ko/v0.4.3/morph/)
+        - [KoNLPY 설치 참고](https://konlpy.org/en/latest/install/)
+        - Windows에서 KoNLPY를 사용하려면 jdk1.7 이상이 설치되어 있어야 함
+            - [jdk1.8 설치](https://www.oracle.com/java/technologies/downloads/#java8-windows)
+        - pip install --upgrade pip
+        - [JPype 다운로드](https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype)
+        - pip install JPype1-1.3.0-cp37-cp37-win_amd64.whl
+            - 0.5.7 이상, 본인 파이썬 버전, 윈도우 32 or 64 bit에 맞춰서 설치
+            - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행   
+        - pip install konlpy
+    - Mecab 설치
+        - [Mecab API](https://konlpy-ko.readthedocs.io/ko/v0.6.0/api/konlpy.tag/#mecab-class)
+        - [Mecab 설치 참고](https://lsjsj92.tistory.com/612)
+        - [Mecab tag표](https://openuiz.tistory.com/90)
+        - [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc/releases/tag/release-0.9.2-msvc-3) => 윈도우 bit에 맞춰서 다운로드
+        - [mecab-ko-dic-msvc.zip](https://github.com/Pusnow/mecab-ko-dic-msvc/releases/tag/mecab-ko-dic-2.1.1-20180720-msvc-2) => mecab-ko-dic-msvc.zip 다운로드
+        - C:/에 mecab 디렉토리 생성 => 위 두 zip파일 mecab 디렉토리에 압축해제
+        - [mecab_python-0.996_ko_0.9.2_msvc-cp37-cp37m-win_amd64.whl](https://github.com/Pusnow/mecab-python-msvc/releases/tag/mecab_python-0.996_ko_0.9.2_msvc-2)
+            - 본인 파이썬 버젼, 윈도우 32 or 64 bit에 맞춰서 설치 (3.8 이상 지원 X)
+            - whl 파일을 다운로드 받은 경로에서 해당 명령어 실행
+2. 띄어쓰기 확인 패키지
+    - PyKoSpacing 설치
+        - pip install git+https://github.com/haven-jeon/PyKoSpacing.git
+    
 - 연습
 
   ```python
@@ -378,12 +385,12 @@ df.shape
 <p align="center"><img style="width:70%" src='https://user-images.githubusercontent.com/97505799/155759219-edc6ed66-10b3-4c33-b3b8-8e75bca9ff84.png'></p>
 
 - Case-01. 결론
-  - WordCloud에 더티 데이터가 너무 많음
-    - 불용어 선정을 할 엄두가 나지 않을 만큼 더티 데이터가 많음
+  - WordCloud에 더티 데이터가 너무 많다.
+    - 불용어 선정을 할 엄두가 나지 않을 만큼 더티 데이터가 많다 ㅠㅠ.
       - 게임 관련 게시글인 만큼 고유명사가 많아서 PyKoSpacing을 적용하면 더티 데이터가 많이 발생
       - 해당 명사들을 따로 처리해주자!
 
-#### 03-2. Case-02.
+#### 03-2. Case-02
 
 - 형태소 분석기 : Mecab
 - 띄어쓰기 처리 X
@@ -453,20 +460,207 @@ plt.show()
 <p align="center"><img style="width:70%" src='https://user-images.githubusercontent.com/97505799/155831438-e1e3cf20-9c75-4926-af01-378780fe2c75.png'></p>
 
 - Case-02. 결론
-  - 띄어쓰기를 하지 않고 Mecab의 사용자 Dictionary를 사용하니 확실히 더티 데이터가 줄어듦
-  - 직업 고민에 대한 고민이 역시 많고, 뉴비들에게 하익, 스익과 같은 점핑 익스프레스 시스템이 생각보다 어렵게 느껴짐
+  - 띄어쓰기를 하지 않고 Mecab의 사용자 Dictionary를 사용하니 확실히 더티 데이터가 줄어들었다.
+  - 직업 고민에 대한 고민이 역시 많고, 뉴비들에게 하익, 스익과 같은 점핑 익스프레스 시스템이 생각보다 어렵다고 느끼는 것 같다.
+
+#### 03-3. Case-03
+
+- 형태소 분석기 : **soynlp**
+- content는 답변 위주의 데이터라 1차적으로 제목, 본문 내용으로만 처리
+- soynlp 설치
+  - pip install soynlp
+
+```python
+# 한글, 숫자 데이터만 남겨둠
+df['ko_num_title_content'] = df['title_content'].apply(lambda x: re.sub('[^0-9가-힣\s]','',x))
+
+# ko_num_title_content 컬럼의 값들을 list로 만듬
+ko_num_title_content_list = list(df['ko_num_title_content'].values)
+
+# WordExtractor의 3가지 알고리즘
+# Branching Entropy
+# Accessor Variety
+# Cohesion Score
+# WordExtractor를 이용하여 세개의 알고리즘에 대해 계산한 각 단어별 score를 집계
+from soynlp.word import WordExtractor
+
+# API 기본 파라미터 설정값 그대로 사용
+we = WordExtractor(min_frequency=100,
+                    min_cohesion_forward=0.05,
+                    min_right_branching_entropy=0.0
+)
+we.train(df['ko_num_title_content'].values)
+words = we.extract()
+
+# 한글은 L + R의 언어 패턴을 가지고 있음
+# 그 중 L부분에 해당하는 명사, 형용사 등을 가지고 옴
+from soynlp.tokenizer import LTokenizer
+
+cohesion_score = {word:score.cohesion_forward for word, score in words.items()}
+tokenizer = LTokenizer(scores=cohesion_score)
+
+# 위에서 생성한 토크나이저를 
+# 해당 컬럼에 적용
+df['token'] = df['ko_num_title_content'].apply(lambda x: tokenizer.tokenize(x, remove_r=True))
+
+soy_token = []
+for i in df['token'].values:
+    for k in i:
+        soy_token.append(k)
+
+# 불용어
+stop_words='뉴비 질문 더 제가 좀 부탁드립니다 하나 싶어서 왜 뭔가 전부 꼭 시작한지 \
+            되나요 되는 너무 하면 해야 같아서 도와주세요 안녕하세요 잘 지금 그냥 \
+            하는 관련 될까요 근데 이번에 정말 있고 중에 같이 모르고 및 다시 아니면 \
+            다른 어떤 된 감사하겠습니다 좋을지 하루 하려고 맞추고 했는데 \
+            같은데 알려주세요 원래 궁금합니다 뭐가 그리고 바로 보니까 있을까요 \
+            또 오늘 나머지 하나요 일단 이제 해서 있는데 써서 첫 있어서 있나요 아직 \
+            어떻게 혹시 계속 이미 따로 쓰고 어제 보니까 이것저것 우선 모르겠네요 \
+            없이 어떤게 알려주시면 모르겠습니다 매일 저는 보고 있는지 맞는지 계정 \
+            있습니다 빨리 어떤게 있다고 싶은데 부탁드려요 대충 적용해서 여기서 \
+            맞나요 갈 완전 있으면 입니다 없어서 하면서 추천좀 좋은 할 하고 많이 \
+            이렇게 걍 그래도 좋나요 1 33333 3333 3 몇가지 가도 해야하는지'
+
+# 불용어 적용
+soy_token = [word for word in soy_token if not word in stop_words]        
+  
+# Counter 라이브러리로 단어의 빈도수 체크 후 많은 순서대로 내림차순 정렬
+from collections import Counter
+count = Counter(soy_token)
+words_dict = dict(count)
+words_dict = sorted(words_dict.items(), key=lambda item: item[1], reverse=True)
+
+# 정렬 후 list로 반환되어 다시 dict로 변환
+words_dict = dict(count)
+
+from wordcloud import WordCloud
+# 폰트를 프로젝트 폴더에 그냥 복사해서 바로 불러왔습니다.
+wordcloud = WordCloud(font_path='NanumBarunGothic.ttf', 
+                      min_font_size=7, max_font_size=150,
+                      margin=3, width=500, height=500,
+                      background_color='white').generate_from_frequencies(words_dict)
+
+# WordCloud 출력
+plt.figure(figsize=(10,10))
+plt.imshow(wordcloud)
+plt.axis('off')
+plt.show()    
+```
+
+- 결과 WordCloud
+
+<p align="center"><img style="width:70%" src='https://user-images.githubusercontent.com/97505799/155882519-9884ea7e-c296-43fd-bb8c-a7f1e47f8f1d.png'></p>
+
+- Case03. 결론
+  - 비지도 학습 기반이라 별도의 명사처리를 하지 않아도 고유 명사들에 상대적으로 좋은 성능을 보여줌
+  - 훈련 데이터 셋이 많을 수록 유리할 것으로 판단
 
 
 
+#### Case-04. 제목, 본문 (한글, 숫자, 띄어쓰기 처리 X, 별도의 명사 처리 O)
 
+- 형태소 분석기 : **soynlp**
+    - 비지도 학습 접근법을 지향하는 형태소 분석기
+    - 여러 개의 문서로부터 학습한 통계 정보를 이용하여 작동
+    - 패턴을 이용하여 단어를 추출하기 때문에 어느 정도 규모가 있는 동일 집단 문서에서 잘 작동
+- content는 답변 위주의 데이터라 1차적으로 제목, 본문 내용으로만 처리
+- soynlp 설치
+    - [soynlp Github Guide](https://github.com/lovit/soynlp) <= 매우 상세
+    - pip install soynlp
 
+```python
+# 한글, 숫자 데이터만 남겨둠
+df['ko_num_title_content'] = df['title_content'].apply(lambda x: re.sub('[^0-9가-힣\s]','',x))
 
+# ko_num_title_content 컬럼의 값들을 list로 만듬
+ko_num_title_content_list = list(df['ko_num_title_content'].values)
 
+from soynlp.noun import LRNounExtractor_v2
+from soynlp.word import WordExtractor
+from soynlp.tokenizer import LTokenizer
 
+# 명사만 추출
+ne = LRNounExtractor_v2(verbose=True)
+ko_num_title_content_nouns_list = ne.train_extract(ko_num_title_content_list)
 
+# 워드 추출
+we = WordExtractor(min_frequency=100,
+                    min_cohesion_forward=0.05,
+                    min_right_branching_entropy=0.0
+)
 
+we.train(ko_num_title_content_nouns_list)
+words = we.extract()
 
+# https://sanghyu.tistory.com/169 참고
+noun_score = {word:score.score for noun, score in nouns.items()}
+cohesion_score = {word:score.cohesion_forward for word, score in words.items()}
 
+combine_score = {noun:score + cohesion_score.get(noun, 0)
+                    for noun, score in noun_score.items()
+                }
+
+combine_score.update(
+    {subword:cohesion for subword, cohesion in cohesion_score.items()
+        if not (subword in combined_score)
+    }
+)
+
+tokenizer = LTokenizer(scores=combine_score)
+
+df['noun_token'] = df['ko_num_title_content'].apply(lambda x: tokenizer.tokenize(x, remove_r=True))
+
+soy_noun_token = []
+for i in df['noun_token'].values:
+    for k in i:
+        soy_noun_token.append(k)
+        
+# 불용어 => 명사 구분이 잘 됐나 보려고 똑같은 불용어 사용
+stop_words='뉴비 질문 더 제가 좀 부탁드립니다 하나 싶어서 왜 뭔가 전부 꼭 시작한지 \
+            되나요 되는 너무 하면 해야 같아서 도와주세요 안녕하세요 잘 지금 그냥 \
+            하는 관련 될까요 근데 이번에 정말 있고 중에 같이 모르고 및 다시 아니면 \
+            다른 어떤 된 감사하겠습니다 좋을지 하루 하려고 맞추고 했는데 \
+            같은데 알려주세요 원래 궁금합니다 뭐가 그리고 바로 보니까 있을까요 \
+            또 오늘 나머지 하나요 일단 이제 해서 있는데 써서 첫 있어서 있나요 아직 \
+            어떻게 혹시 계속 이미 따로 쓰고 어제 보니까 이것저것 우선 모르겠네요 \
+            없이 어떤게 알려주시면 모르겠습니다 매일 저는 보고 있는지 맞는지 계정 \
+            있습니다 빨리 어떤게 있다고 싶은데 부탁드려요 대충 적용해서 여기서 \
+            맞나요 갈 완전 있으면 입니다 없어서 하면서 추천좀 좋은 할 하고 많이 \
+            이렇게 걍 그래도 좋나요 1 33333 3333 3 몇가지 가도 해야하는지'
+
+# 불용어 적용
+soy_noun_token = [word for word in soy_noun_token if not word in stop_words]        
+
+# Counter 라이브러리로 단어의 빈도수 체크 후 많은 순서대로 내림차순 정렬
+from collections import Counter
+count = Counter(soy_noun_token)
+words_dict = dict(count)
+words_dict = sorted(words_dict.items(), key=lambda item: item[1], reverse=True)
+
+# 정렬 후 list로 반환되어 다시 dict로 변환
+words_dict = dict(count)
+
+from wordcloud import WordCloud
+# 폰트를 프로젝트 폴더에 그냥 복사해서 바로 불러왔습니다.
+wordcloud = WordCloud(font_path='NanumBarunGothic.ttf', 
+                      min_font_size=7, max_font_size=150,
+                      margin=3, width=500, height=500,
+                      background_color='white').generate_from_frequencies(words_dict)
+
+# WordCloud 출력
+plt.figure(figsize=(10,10))
+plt.imshow(wordcloud)
+plt.axis('off')
+plt.show()
+```
+
+- 결과 WorldCloud
+
+<p align="center"><img style="width:70%" src='https://user-images.githubusercontent.com/97505799/155882798-9c876ce7-b603-4816-99d6-062738285939.png'></p>
+
+- Case-04. 결론
+  - Case-03과 별 차이가 없음
+  - 명사를 별도로 처리해줬는데 잘못한 건지 구분이 거의 되지 않음
 
 
 
