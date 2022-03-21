@@ -47,7 +47,7 @@
 <span style="font-size: 300%">👨‍✈️</span>Robots.txt 참고하여 스크래핑하였지만 혹시 문제가 된다면 말씀해주세요!!!
 
 - [LostArk 인벤 - 질문과 답변 게시판](https://www.inven.co.kr/board/lostark/4822)
-- [LostArk 공홈 - Q&A 게시판](https://lostark.game.onstove.com/Library/Qa/List)
+- [LostArk 공홈 - Q&A 게시판](https://lostark.game.onstove.com/Library/Qa/List) (아직 X)
 
 
 
